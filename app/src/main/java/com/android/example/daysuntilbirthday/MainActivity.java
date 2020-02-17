@@ -2,12 +2,14 @@ package com.android.example.daysuntilbirthday;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -19,12 +21,16 @@ public class MainActivity extends AppCompatActivity {
     private Spinner spinner;
     private EditText editText;
     private TextView textView;
+    private Button button2;
+    private CalculateDays calculateDays;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AndroidThreeTen.init(this);
+
+        calculateDays = new CalculateDays();
 
         spinner = findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this,
@@ -74,18 +80,30 @@ public class MainActivity extends AppCompatActivity {
 
         textView = findViewById(R.id.textView2);
         textView.setVisibility(View.INVISIBLE);
+
+        button2 = findViewById(R.id.button2);
+        button2.setVisibility(View.INVISIBLE);
     }
 
     public void buttonClicked(View view) {
         if (!editText.getText().toString().isEmpty()) {
             textView.setVisibility(View.VISIBLE);
-            CalculateDays calculateDays = new CalculateDays();
+            button2.setVisibility(View.VISIBLE);
             textView.setText(calculateDays.calcuteDays(Integer.parseInt(editText.getText().toString()), spinner.getSelectedItemPosition() + 1));
-            Log.d("test", "" + spinner.getSelectedItemPosition());
         }
         else {
             Toast toast = Toast.makeText(this, "Input a date.", Toast.LENGTH_LONG);
             toast.show();
         }
+    }
+
+    public void shareButtonClicked(View view) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, calculateDays.getShareMessage());
+        sendIntent.setType("text/plain");
+
+        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        startActivity(shareIntent);
     }
 }

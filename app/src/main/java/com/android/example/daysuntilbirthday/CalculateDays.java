@@ -4,8 +4,10 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.Year;
 import org.threeten.bp.temporal.ChronoUnit;
 
-public class CalculateDays {
-    public String calcuteDays(int day, int month) {
+class CalculateDays {
+    private String shareMessage;
+
+    String calcuteDays(int day, int month) {
         int year = Year.now().getValue();
         LocalDate localDateNow = LocalDate.now();
         LocalDate localDateBirthDay;
@@ -29,11 +31,23 @@ public class CalculateDays {
             result = ChronoUnit.DAYS.between(localDateNow, nextBirthDay);
         }
         else if (daysBetween > 0) {
-            result = daysBetween;
+            if (daysBetween != 1) {
+                result = daysBetween;
+            }
+            else {
+                shareMessage = "My birthday is tomorrow.";
+                return "Your birthday is tomorrow.";
+            }
         }
         else {
+            shareMessage = "Today is my birthday.";
             return "Your birthday is today. Happy Birthday.";
         }
-        return "There are " + result + " days till your birthday";
+        shareMessage = "There are " + result + " days till my birthday.";
+        return "There are " + result + " days till your birthday.";
+    }
+
+    public String getShareMessage() {
+        return shareMessage;
     }
 }
